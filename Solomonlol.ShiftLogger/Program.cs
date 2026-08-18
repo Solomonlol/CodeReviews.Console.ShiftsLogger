@@ -12,7 +12,7 @@ var connectionString = builder.Configuration.GetConnectionString("SQLServerConne
 builder.Services.AddDbContext<ApplicationContext>(options =>
                     options.UseSqlServer(connectionString));
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmloyeeService, EmployeeService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
 
 
@@ -26,7 +26,7 @@ if(app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapUserEndpoints();
+app.MapEmployeeEndpoints();
 app.MapShiftEndpoints();
 
 await app.RunAsync();

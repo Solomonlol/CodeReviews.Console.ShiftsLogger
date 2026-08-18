@@ -6,7 +6,7 @@ namespace Solomonlol.ShiftLogger
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Employee> Employees { get; set; } = null!;
         public DbSet<Shift> Shifts { get; set; } = null!;
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
@@ -14,13 +14,13 @@ namespace Solomonlol.ShiftLogger
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Shift>()
-                .HasOne(u=>u.User)
+                .HasOne(u=>u.Employee)
                 .WithMany(s=>s.Shifts)
-                .HasForeignKey(s=>s.UserId)
+                .HasForeignKey(s=>s.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.UserIdentificationNumber)
+            modelBuilder.Entity<Employee>()
+                .HasIndex(e => e.EmployeeNumber)
                 .IsUnique();
         }
     }

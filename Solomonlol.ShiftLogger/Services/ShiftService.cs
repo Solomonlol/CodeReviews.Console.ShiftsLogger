@@ -32,9 +32,9 @@ namespace ShiftLogger.Backend.Services
             return await _context.Shifts.ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Shift>> GetAllByUserId(int userId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Shift>> GetAllByEmployeeNumber(int employeeId, CancellationToken cancellationToken = default)
         {
-            return await _context.Shifts.Where(s=>s.UserId==userId).ToListAsync(cancellationToken);
+            return await _context.Shifts.Where(s=>s.EmployeeId==employeeId).ToListAsync(cancellationToken);
         }
 
         public async Task<Shift> GetById(int id, CancellationToken cancellationToken = default)

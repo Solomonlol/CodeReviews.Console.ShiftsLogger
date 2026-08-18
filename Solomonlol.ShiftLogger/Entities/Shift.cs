@@ -10,10 +10,10 @@ namespace ShiftLogger.Backend.Entities
         [Required]
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public TimeSpan Duration { get; set; }
+        public bool IsEnded { get; set; }
         [Required]
-        public int UserId { get; set; }
-        [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+        public int EmployeeId { get; set; }
+        [ForeignKey(nameof(EmployeeId))]
+        public Employee Employee { get; set; }
     }
 }

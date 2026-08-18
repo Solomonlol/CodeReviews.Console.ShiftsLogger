@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace ShiftLogger.Backend.Entities
 {
-    public class User
+    public class Employee
     {
         [Key]
         public int Id { get; set; }
@@ -19,7 +19,7 @@ namespace ShiftLogger.Backend.Entities
 
         
         [Range(1, 999999, ErrorMessage ="User identification number should be on 1-999999 range")]
-        public int UserIdentificationNumber { get; set; }
+        public int EmployeeNumber { get; set; }
 
         [JsonIgnore]
         public ICollection<Shift> Shifts { get; set; } = new List<Shift>();
