@@ -13,6 +13,14 @@ namespace ShiftLogger.Backend.Mapping
                 .ForAllMembers(e => e.Condition((dto, employee, member) =>
                 member != null &&
                 !(member is string s && string.IsNullOrEmpty(s))));
+
+            CreateMap<Shift, ShiftDto>();
+            CreateMap<ShiftDto, Shift>()
+                .ForMember(s=>s.Employee, d=>d.Ignore())
+                .ForMember(s=>s.Id, d=>d.Ignore())
+                .ForAllMembers(e => e.Condition((dto, employee, member) =>
+                member != null &&
+                !(member is string s && string.IsNullOrEmpty(s))));
         }
     }
 }

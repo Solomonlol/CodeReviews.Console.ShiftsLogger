@@ -13,7 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("SQLServerConne
 builder.Services.AddDbContext<ApplicationContext>(options =>
                     options.UseSqlServer(connectionString));
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<IEmloyeeService, EmployeeService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddAutoMapper(cfg =>
 {

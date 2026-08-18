@@ -9,7 +9,7 @@ namespace ShiftLogger.Backend.Entities
         public int Id { get; set; }
         [Required]
         public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public bool IsEnded { get; set; }
         [Required]
         public int EmployeeId { get; set; }

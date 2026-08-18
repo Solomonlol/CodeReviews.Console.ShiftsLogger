@@ -3,7 +3,7 @@ using ShiftLogger.Backend.Entities.Dto;
 
 namespace ShiftLogger.Backend.Interfaces
 {
-    internal interface IEmloyeeService
+    public interface IEmployeeService
     {
         Task<EmployeeDto> GetById(int id, CancellationToken cancellationToken = default);
         Task<EmployeeDto> GetByNumber(int employeeNumber, CancellationToken cancellationToken = default);

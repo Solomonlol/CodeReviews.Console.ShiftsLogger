@@ -7,7 +7,7 @@ using Solomonlol.ShiftLogger;
 
 namespace ShiftLogger.Backend.Services
 {
-    public class EmployeeService : IEmloyeeService
+    public class EmployeeService : IEmployeeService
     {
         private readonly ApplicationContext _context;
         private readonly IMapper _mapper;
@@ -25,9 +25,9 @@ namespace ShiftLogger.Backend.Services
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task Delete(int id, CancellationToken cancellationToken = default)
+        public async Task Delete(int employeeNumber, CancellationToken cancellationToken = default)
         {
-            var user = await _context.Employees.FindAsync(id, cancellationToken);
+            var user = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
             if(user!=null)
                 _context.Employees.Remove(user);
             await _context.SaveChangesAsync(cancellationToken);
@@ -36,20 +36,15 @@ namespace ShiftLogger.Backend.Services
         public async Task<IEnumerable<EmployeeDto>> GetAll(CancellationToken cancellationToken = default)
         {
             var employeeList = await _context.Employees.ToListAsync(cancellationToken);
-            var dtoList = new List<EmployeeDto>();
-            foreach (var employee in employeeList)
-            {
-                var dto = new EmployeeDto();
-                _mapper.Map(employee, dto);
-                dtoList.Add(dto);
-            }
-            return dtoList;
+            return _mapper.Map<List<EmployeeDto>>(employeeList);
         }
 
         public async Task<EmployeeDto> GetById(int id, CancellationToken cancellationToken = default)
         {
             var employee = await _context.Employees.FindAsync(id, cancellationToken);
             var dto = new EmployeeDto();
+            if (employee != null)
+                return null;
             _mapper.Map(employee, dto);
             return dto;
         }
