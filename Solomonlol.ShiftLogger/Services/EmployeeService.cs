@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ShiftLogger.Backend.Entities;
 using ShiftLogger.Backend.Entities.Dto;
 using ShiftLogger.Backend.Interfaces;
@@ -9,14 +10,18 @@ namespace ShiftLogger.Backend.Services
     public class EmployeeService : IEmloyeeService
     {
         private readonly ApplicationContext _context;
-        public EmployeeService(ApplicationContext context)
+        private readonly IMapper _mapper;
+        public EmployeeService(ApplicationContext context, IMapper mapper)
         {
+            _mapper = mapper;
             _context = context;
         }
 
         public async Task Create(EmployeeDto employee, CancellationToken cancellationToken = default)
         {
-            await _context.Employees.AddAsync(employee, cancellationToken);
+            var createdEmployee = new Employee();
+            _mapper.Map(employee, createdEmployee);
+            await _context.Employees.AddAsync(createdEmployee, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
@@ -28,25 +33,43 @@ namespace ShiftLogger.Backend.Services
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Employee>> GetAll(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<EmployeeDto>> GetAll(CancellationToken cancellationToken = default)
         {
-            return await _context.Employees.ToListAsync(cancellationToken);
+            var employeeList = await _context.Employees.ToListAsync(cancellationToken);
+            var dtoList = new List<EmployeeDto>();
+            foreach (var employee in employeeList)
+            {
+                var dto = new EmployeeDto();
+                _mapper.Map(employee, dto);
+                dtoList.Add(dto);
+            }
+            return dtoList;
         }
 
-        public async Task<Employee> GetById(int id, CancellationToken cancellationToken = default)
+        public async Task<EmployeeDto> GetById(int id, CancellationToken cancellationToken = default)
         {
-            return await _context.Employees.FindAsync(id, cancellationToken);
+            var employee = await _context.Employees.FindAsync(id, cancellationToken);
+            var dto = new EmployeeDto();
+            _mapper.Map(employee, dto);
+            return dto;
         }
 
-        public async Task<Employee> GetByNumber(int employeeNumber, CancellationToken cancellationToken = default)
+        public async Task<EmployeeDto> GetByNumber(int employeeNumber, CancellationToken cancellationToken = default)
         {
-            return await _context.Employees.FirstOrDefaultAsync(u=>u.EmployeeNumber==employeeNumber);
+            var employee = await _context.Employees.FirstOrDefaultAsync(u=>u.EmployeeNumber==employeeNumber);
+            var dto = new EmployeeDto();
+            _mapper.Map(employee, dto);
+            return dto;
         }
 
-        public async Task Update(Employee user, CancellationToken cancellationToken = default)
+        public async Task Update(int employeeNumber, EmployeeDto dto, CancellationToken cancellationToken = default)
         {
-            if(user!=null)
-                _context.Employees.Update(user);
+            var employee = await _context.Employees.FirstOrDefaultAsync(e=>e.EmployeeNumber== employeeNumber, cancellationToken);
+            if (employee != null)
+            {
+                _mapper.Map(dto, employee);
+                _context.Employees.Update(employee);
+            }
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

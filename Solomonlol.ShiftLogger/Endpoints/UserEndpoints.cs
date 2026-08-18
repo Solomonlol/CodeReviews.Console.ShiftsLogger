@@ -1,4 +1,5 @@
-﻿using ShiftLogger.Backend.Entities;
+﻿using AutoMapper;
+using ShiftLogger.Backend.Entities;
 using ShiftLogger.Backend.Entities.Dto;
 using ShiftLogger.Backend.Interfaces;
 
@@ -34,6 +35,13 @@ namespace ShiftLogger.Backend.Endpoints
             {
                 var employee = await db.GetByNumber(employeeNumber, ct);
 
+                if(employee is null)
+                    return Results.NotFound();
+
+                
+
+                await db.Update(employeeNumber, employee);
+                return Results.Ok(employee);
             });
         }
     }

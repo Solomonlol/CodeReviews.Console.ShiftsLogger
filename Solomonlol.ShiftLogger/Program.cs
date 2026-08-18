@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ShiftLogger.Backend.Endpoints;
 using ShiftLogger.Backend.Entities;
 using ShiftLogger.Backend.Interfaces;
+using ShiftLogger.Backend.Mapping;
 using ShiftLogger.Backend.Services;
 using Solomonlol.ShiftLogger;
 
@@ -14,6 +15,10 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IEmloyeeService, EmployeeService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 
 

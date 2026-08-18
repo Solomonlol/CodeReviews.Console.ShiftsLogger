@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ShiftLogger.Backend.Entities.Dto
 {
-    internal class EmployeeDto
+    public class EmployeeDto
     {
         [Required(ErrorMessage = "First name not specified")]
         [StringLength(50)]
