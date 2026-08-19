@@ -1,5 +1,6 @@
 ﻿using ShiftLogger.Frontend.Entities.Dto;
 using ShiftLogger.Frontend.Interfaces;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,8 +16,11 @@ namespace ShiftLogger.Frontend.Menus
         {
             _employeeService = employeeService;
             _viewService = viewService;
-            AddItem("Create", () => Create());
             AddItem("View All", () => GetAll());
+            AddItem("View one", () => Get());
+            AddItem("Create", () => Create());
+            AddItem("Update", () => Update());
+            AddItem("Delete", () => Delete());
             AddExitItem("Back");
         }
 
@@ -27,11 +31,32 @@ namespace ShiftLogger.Frontend.Menus
 
         public async Task GetAll(CancellationToken ct = default)
         {
-            var responce = await _employeeService.GetAll(ct);
-            var listDto = responce.ToList();
-            await _viewService.View(listDto, "Employees", ct);
+            var responce = (await _employeeService.GetAll(ct))?.ToList();
+            if (responce.Any())
+                await _viewService.View(responce, "Employees", ct);
+            else AnsiConsole.MarkupLine("[red]Not found any employees[/]");
         }
         
+        public async Task Get(CancellationToken ct = default)
+        {
+            var response = await _employeeService.Get(ct);
+            if(response!=null)
+            {
+                var list = new List<EmployeeDto>();
+                list.Add(response);
+                await _viewService.View(list, "Empoyee info", ct);
+            }
+        }
+
+        public async Task Update(CancellationToken ct = default)
+        {
+            await _employeeService.Update(ct);
+        }
+
+        public async Task Delete(CancellationToken ct = default)
+        {
+            await _employeeService.Delete(ct);
+        }
 
     }
 }

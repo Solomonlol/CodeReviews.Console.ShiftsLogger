@@ -1,4 +1,4 @@
-﻿namespace ShiftLogger.Backend.Exceptions
+﻿namespace ShiftLogger.Frontend.Exceptions
 {
     public class NotFoundException : Exception
     {

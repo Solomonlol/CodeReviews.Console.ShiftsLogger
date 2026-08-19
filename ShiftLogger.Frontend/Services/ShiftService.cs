@@ -14,7 +14,7 @@ namespace ShiftLogger.Frontend.Services
             _httpClient = httpClientFactory.CreateClient();
             _httpClient.BaseAddress = new Uri("http://localhost:5013/");
         }
-        public Task End(int employeeNumber, CancellationToken cancellationToken = default)
+        public Task End(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -29,17 +29,17 @@ namespace ShiftLogger.Frontend.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ShiftDto>> GetByEmployeeNumber(int empoyeeNumber, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<ShiftDto>> GetByEmployeeNumber(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task GetCurrent(int empoyeeNumber, CancellationToken cancellationToken = default)
+        public Task GetCurrent(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task Start(int employeeNumber, CancellationToken cancellationToken = default)
+        public Task Start(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

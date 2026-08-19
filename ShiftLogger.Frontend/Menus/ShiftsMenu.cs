@@ -20,8 +20,7 @@ namespace ShiftLogger.Frontend.Menus
 
         public async Task Start(CancellationToken ct = default)
         {
-            var employeeNumber = await AnsiConsole.AskAsync<int>("[yellow]Enter your personal employee number:[/]", ct);
-            await _shiftService.Start(employeeNumber, ct);
+            await _shiftService.Start(ct);
         }
     }
 }
