@@ -18,11 +18,6 @@ namespace ShiftLogger.Backend.Services
             _mapper = mapper;
         }
 
-        private async Task Create(Shift shift, CancellationToken cancellationToken = default)
-        {
-            await _context.Shifts.AddAsync(shift, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
-        }
 
         public async Task Delete(int id, CancellationToken cancellationToken = default)
         {
@@ -67,13 +62,17 @@ namespace ShiftLogger.Backend.Services
             return await _context.Shifts.Where(s=>s.EmployeeId==employeeId).ToListAsync(cancellationToken);
         }
 
-        public async Task<Shift> GetById(int id, CancellationToken cancellationToken = default)
+        //public async Task<Shift> GetById(int id, CancellationToken cancellationToken = default)
+        //{
+        //    return await _context.Shifts.FindAsync(id, cancellationToken);
+        //}
+
+        private async Task Create(Shift shift, CancellationToken cancellationToken = default)
         {
-            return await _context.Shifts.FindAsync(id, cancellationToken);
+            await _context.Shifts.AddAsync(shift, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
-
-
-        public async Task Update(Shift shift, CancellationToken cancellationToken = default)
+        private async Task Update(Shift shift, CancellationToken cancellationToken = default)
         {
             if (shift != null)
                 _context.Shifts.Update(shift);

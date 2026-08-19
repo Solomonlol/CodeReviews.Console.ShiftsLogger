@@ -8,6 +8,12 @@ namespace ShiftLogger.Frontend.Services
 {
     internal class ShiftService : IShiftService
     {
+        private readonly HttpClient _httpClient;
+        public ShiftService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:5013/");
+        }
         public Task End(int employeeNumber, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
