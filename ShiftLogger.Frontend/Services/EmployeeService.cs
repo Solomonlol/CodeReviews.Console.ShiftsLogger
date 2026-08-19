@@ -161,32 +161,34 @@ namespace ShiftLogger.Frontend.Services
                         .Title("[yellow]Choose what info to update:[/]")
                         .AddChoices(properties)
                         );
-
-                    foreach (var choise in choises)
+                    if (await AnsiConsole.ConfirmAsync("Are you sure?"))
                     {
-                        switch (choise)
+                        foreach (var choise in choises)
                         {
-                            case "FirstName":
-                                employeeDto.FirstName = await AnsiConsole.AskAsync<string>("[yellow]New first name:[/]");
-                                break;
-                            case "LastName":
-                                employeeDto.LastName = await AnsiConsole.AskAsync<string>("[yellow]New last name:[/]");
-                                break;
-                            case "EmployeeNumber":
-                                employeeDto.EmployeeNumber = await AnsiConsole.AskAsync<int>("[yellow]New last name:[/]");
-                                break;
+                            switch (choise)
+                            {
+                                case "FirstName":
+                                    employeeDto.FirstName = await AnsiConsole.AskAsync<string>("[yellow]New first name:[/]");
+                                    break;
+                                case "LastName":
+                                    employeeDto.LastName = await AnsiConsole.AskAsync<string>("[yellow]New last name:[/]");
+                                    break;
+                                case "EmployeeNumber":
+                                    employeeDto.EmployeeNumber = await AnsiConsole.AskAsync<int>("[yellow]New employee number:[/]");
+                                    break;
+                            }
                         }
-                    }
 
-                    var jsonDto = JsonSerializer.Serialize(employeeDto);
-                    var content = new StringContent(jsonDto, Encoding.UTF8, "application/json");
-                    var responce = await _httpClient.PutAsync($"api/employees", content);
+                        var jsonDto = JsonSerializer.Serialize(employeeDto);
+                        var content = new StringContent(jsonDto, Encoding.UTF8, "application/json");
+                        var responce = await _httpClient.PutAsync($"api/employees/{employeeNumber}", content);
 
-                    if (responce.IsSuccessStatusCode)
-                        AnsiConsole.MarkupLine("[green]Updated successfully.[/]");
-                    else
-                    {
-                        AnsiConsole.MarkupLine($"[red]API Error: {(int)responce.StatusCode} - {responce.ReasonPhrase}[/]");
+                        if (responce.IsSuccessStatusCode)
+                            AnsiConsole.MarkupLine("[green]Updated successfully.[/]");
+                        else
+                        {
+                            AnsiConsole.MarkupLine($"[red]API Error: {(int)responce.StatusCode} - {responce.ReasonPhrase}[/]");
+                        }
                     }
                 }
             }
