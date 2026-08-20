@@ -32,7 +32,7 @@ namespace ShiftLogger.Frontend.Menus
         public async Task GetAll(CancellationToken ct = default)
         {
             var responce = (await _employeeService.GetAll(ct))?.ToList();
-            if (responce.Any())
+            if (responce?.Any()==true)
                 await _viewService.View(responce, "Employees", ct);
             else AnsiConsole.MarkupLine("[red]Not found any employees[/]");
         }

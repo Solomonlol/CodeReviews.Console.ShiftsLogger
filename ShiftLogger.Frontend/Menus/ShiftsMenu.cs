@@ -36,14 +36,14 @@ namespace ShiftLogger.Frontend.Menus
         public async Task GetAll(CancellationToken ct = default)
         {
             var list = (await _shiftService.GetAll(ct))?.ToList();
-            if(list.Any())
+            if(list?.Any()==true)
                 await _viewService.View(list.ToList(), "All shifts", ct);
         }
 
         public async Task GetAllCurrent(CancellationToken ct = default)
         {
             var list = (await _shiftService.GetAllCurrent(ct))?.ToList();
-            if(list.Any())
+            if(list?.Any()==true)
                 await _viewService.View(list.ToList(), "All current shifts", ct);
         }
 

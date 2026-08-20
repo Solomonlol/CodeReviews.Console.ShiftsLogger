@@ -61,11 +61,15 @@ namespace ShiftLogger.Backend.Services
         {
             return await _context.Shifts.ToListAsync(cancellationToken);
         }
+
         public async Task<ShiftDto?> GetCurrent(int employeeNumber, CancellationToken cancellationToken = default)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
-            var shift = await _context.Shifts.Where(s => s.EmployeeId == employee.Id && s.IsEnded == false).FirstAsync(cancellationToken);
-            return employee != null ? _mapper.Map<ShiftDto>(shift) : null;
+            
+            return employee != null 
+                ? _mapper.Map<ShiftDto>(await _context.Shifts.Where(s => s.EmployeeId == employee.Id && s.IsEnded == false)
+                .FirstOrDefaultAsync(cancellationToken)) 
+                : null;
         }
 
         public async Task<IEnumerable<Shift>> GetAllByEmployeeNumber(int employeeNumber, CancellationToken cancellationToken = default)

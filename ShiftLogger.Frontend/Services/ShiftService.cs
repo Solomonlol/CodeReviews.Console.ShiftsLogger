@@ -25,7 +25,7 @@ namespace ShiftLogger.Frontend.Services
                 var responce = await _httpClient.GetAsync($"api/employees/{employeeNumber}", ct);
                 if (responce.IsSuccessStatusCode)
                 {
-                    var dto = JsonSerializer.Serialize(new { EmployeeNumber = employeeNumber, StartTime = DateTime.UtcNow });
+                    var dto = JsonSerializer.Serialize(new ShiftDto { StartTime = DateTime.UtcNow });
                     var content = new StringContent(dto, Encoding.UTF8, "application/json");
                     responce = await _httpClient.PostAsync($"api/shifts/{employeeNumber}", content, ct);
                     if (responce.IsSuccessStatusCode)

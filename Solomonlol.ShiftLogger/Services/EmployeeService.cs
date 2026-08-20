@@ -50,22 +50,16 @@ namespace ShiftLogger.Backend.Services
             return _mapper.Map<List<EmployeeDto>>(employeeList);
         }
 
-        public async Task<EmployeeDto> GetById(int id, CancellationToken cancellationToken = default)
+        public async Task<EmployeeDto?> GetByNumber(int employeeNumber, CancellationToken cancellationToken = default)
         {
-            var employee = await _context.Employees.FindAsync(id, cancellationToken);
-            var dto = new EmployeeDto();
+            var employee = await _context.Employees.FirstOrDefaultAsync(u=>u.EmployeeNumber==employeeNumber, cancellationToken);
             if (employee != null)
-                return null;
-            _mapper.Map(employee, dto);
-            return dto;
-        }
-
-        public async Task<EmployeeDto> GetByNumber(int employeeNumber, CancellationToken cancellationToken = default)
-        {
-            var employee = await _context.Employees.FirstOrDefaultAsync(u=>u.EmployeeNumber==employeeNumber);
-            var dto = new EmployeeDto();
-            _mapper.Map(employee, dto);
-            return dto;
+            {
+                var dto = new EmployeeDto();
+                _mapper.Map(employee, dto);
+                return dto;
+            }
+            else return null;
         }
 
         public async Task<bool> Update(int employeeNumber, EmployeeDto dto, CancellationToken cancellationToken = default)
