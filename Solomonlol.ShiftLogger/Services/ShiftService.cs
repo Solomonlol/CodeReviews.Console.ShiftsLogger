@@ -4,6 +4,7 @@ using ShiftLogger.Backend.Entities;
 using ShiftLogger.Backend.Entities.Dto;
 using ShiftLogger.Backend.Interfaces;
 using Solomonlol.ShiftLogger;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace ShiftLogger.Backend.Services
@@ -19,27 +20,7 @@ namespace ShiftLogger.Backend.Services
         }
 
 
-        public async Task Delete(int id, CancellationToken cancellationToken = default)
-        {
-            var shift = await _context.Shifts.FindAsync(id, cancellationToken);
-            if(shift!=null)
-                _context.Shifts.Remove(shift);
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-
-        public async Task End(int employeeNumber, ShiftDto dto, CancellationToken cancellationToken = default)
-        {
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
-            if (employee != null)
-            {
-                var checkShift = await _context.Shifts.FirstOrDefaultAsync(s => s.IsEnded == false && s.EmployeeId == employee.Id, cancellationToken);
-                if (checkShift != null)
-                {
-                    await Update(_mapper.Map<Shift>(dto), cancellationToken);
-                }
-            }
-        }
-        public async Task Start(int employeeNumber, ShiftDto dto, CancellationToken cancellationToken = default)
+        public async Task<bool> Start(int employeeNumber, ShiftDto dto, CancellationToken cancellationToken = default)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
             if (employee != null)
@@ -47,19 +28,54 @@ namespace ShiftLogger.Backend.Services
                 var checkShift = await _context.Shifts.FirstOrDefaultAsync(s => s.IsEnded == false && s.EmployeeId == employee.Id, cancellationToken);
                 if (checkShift == null)
                 {
-                    await Create(_mapper.Map<Shift>(dto), cancellationToken);
+                    var shift = new Shift()
+                    {
+                        StartTime = dto.StartTime,
+                        EmployeeId = employee.Id,
+                        IsEnded = false
+                    };
+                    return await Create(shift, cancellationToken);
                 }
+                else return false;
             }
+            else return false;
         }
 
+        public async Task<bool> End(int employeeNumber, ShiftDto dto, CancellationToken cancellationToken = default)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
+            if (employee != null)
+            {
+                var currentShift = await _context.Shifts.FirstOrDefaultAsync(s => s.IsEnded == false && s.EmployeeId == employee.Id, cancellationToken);
+                if (currentShift != null && currentShift.StartTime< dto.EndTime)
+                {
+                    currentShift.EndTime = dto.EndTime;
+                    currentShift.IsEnded = true;
+                    return await Update(currentShift, cancellationToken);
+                }
+                else return false;
+            }
+            else return false;
+        }
+
+        //public async Task Delete(int id, CancellationToken cancellationToken = default)
+        //{
+        //    var shift = await _context.Shifts.FindAsync(id, cancellationToken);
+        //    if(shift!=null)
+        //        _context.Shifts.Remove(shift);
+        //    await _context.SaveChangesAsync(cancellationToken);
+        //}
         public async Task<IEnumerable<Shift>> GetAll(CancellationToken cancellationToken = default)
         {
             return await _context.Shifts.ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Shift>> GetAllByEmployeeNumber(int employeeId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Shift>> GetAllByEmployeeNumber(int employeeNumber, CancellationToken cancellationToken = default)
         {
-            return await _context.Shifts.Where(s=>s.EmployeeId==employeeId).ToListAsync(cancellationToken);
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
+            
+            return employee!=null ? await _context.Shifts.Where(s => s.EmployeeId == employee.Id).ToListAsync(cancellationToken) : Enumerable.Empty<Shift>();
+            
         }
 
         //public async Task<Shift> GetById(int id, CancellationToken cancellationToken = default)
@@ -67,16 +83,17 @@ namespace ShiftLogger.Backend.Services
         //    return await _context.Shifts.FindAsync(id, cancellationToken);
         //}
 
-        private async Task Create(Shift shift, CancellationToken cancellationToken = default)
+        private async Task<bool> Create(Shift shift, CancellationToken cancellationToken = default)
         {
-            await _context.Shifts.AddAsync(shift, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            if(shift!=null)
+                await _context.Shifts.AddAsync(shift, cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken)>0 ? true : false;
         }
-        private async Task Update(Shift shift, CancellationToken cancellationToken = default)
+        private async Task<bool> Update(Shift shift, CancellationToken cancellationToken = default)
         {
             if (shift != null)
                 _context.Shifts.Update(shift);
-            await _context.SaveChangesAsync(cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken)>0 ? true : false;
         }
     }
 }

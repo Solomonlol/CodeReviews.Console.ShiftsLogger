@@ -23,25 +23,24 @@ namespace ShiftLogger.Backend.Endpoints
 
             app.MapPost("/api/employees", async(EmployeeDto employee, IEmployeeService db, CancellationToken ct) =>
             {
-                await db.Create(employee, ct);
-                return Results.Created();
+                return await db.Create(employee, ct) ? Results.Created() : Results.Conflict();
             });
 
             app.MapDelete("/api/employees/{employeeNumber}", async (int employeeNumber, IEmployeeService db, CancellationToken ct) =>
             {
-                await db.Delete(employeeNumber, ct);
-                return Results.NoContent();
+
+                return await db.Delete(employeeNumber, ct) ? Results.NoContent() : Results.BadRequest();
             });
 
-            app.MapPut("/api/employees/{id}", async (int id, EmployeeDto dto, IEmployeeService db, CancellationToken ct) =>
+            app.MapPut("/api/employees/{employeeNumber}", async (int employeeNumber, EmployeeDto dto, IEmployeeService db, CancellationToken ct) =>
             {
-                var employee = await db.GetById(id, ct);
+                var employee = await db.GetByNumber(employeeNumber, ct);
 
                 if(employee is null)
                     return Results.NotFound();
 
-                await db.Update(id, dto);
-                return Results.Ok(dto);
+                
+                return await db.Update(employeeNumber, dto) ? Results.Ok(dto) : Results.BadRequest(dto);
             });
         }
     }

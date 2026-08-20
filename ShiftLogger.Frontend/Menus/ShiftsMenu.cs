@@ -15,12 +15,18 @@ namespace ShiftLogger.Frontend.Menus
             _shiftService = shiftService;
             _viewService = viewService;
             AddItem("Start shift", () => Start());
+            AddItem("End shift", () => End());
             AddExitItem("Back");
         }
 
         public async Task Start(CancellationToken ct = default)
         {
             await _shiftService.Start(ct);
+        }
+
+        public async Task End(CancellationToken ct = default)
+        {
+            await _shiftService.End(ct);
         }
     }
 }

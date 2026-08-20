@@ -15,20 +15,18 @@ namespace ShiftLogger.Backend.Endpoints
 
             app.MapGet("/api/shifts/{employeeNumber}", async (int employeeNumber, IShiftService db, CancellationToken ct) =>
             {
-                await db.GetAllByEmployeeNumber(employeeNumber, ct);
-                return Results.Ok();
+                return await db.GetAllByEmployeeNumber(employeeNumber, ct);
+                //return Results.Ok();
             });
 
             app.MapPost("/api/shifts/{employeeNumber}", async (int employeeNumber, ShiftDto dto, IShiftService db, CancellationToken ct) =>
             {
-                await db.Start(employeeNumber, dto, ct);
-                return Results.Created();
+                return await db.Start(employeeNumber, dto, ct) ? Results.Created() : Results.Conflict(dto);
             });
 
             app.MapPut("/api/shifts/{employeeNumber}", async (int employeeNumber, ShiftDto dto, IShiftService db, CancellationToken ct) =>
             {
-                await db.End(employeeNumber, dto, ct);
-                return Results.Ok(dto);
+                return await db.End(employeeNumber, dto, ct) ? Results.Ok(dto) : Results.Conflict(dto);
             });
         }
     }

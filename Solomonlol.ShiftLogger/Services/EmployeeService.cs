@@ -17,20 +17,31 @@ namespace ShiftLogger.Backend.Services
             _context = context;
         }
 
-        public async Task Create(EmployeeDto employee, CancellationToken cancellationToken = default)
+        public async Task<bool> Create(EmployeeDto employee, CancellationToken cancellationToken = default)
         {
-            var createdEmployee = new Employee();
-            _mapper.Map(employee, createdEmployee);
-            await _context.Employees.AddAsync(createdEmployee, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            var check = await _context.Employees.FirstOrDefaultAsync(e=>e.EmployeeNumber==employee.EmployeeNumber, cancellationToken);
+            if (check == null)
+            {
+                var createdEmployee = new Employee();
+                _mapper.Map(employee, createdEmployee);
+                await _context.Employees.AddAsync(createdEmployee, cancellationToken);
+                var saving = await _context.SaveChangesAsync(cancellationToken);
+                if (saving > 0) return true;
+                else return false;
+            }
+            else return false;
         }
 
-        public async Task Delete(int employeeNumber, CancellationToken cancellationToken = default)
+        public async Task<bool> Delete(int employeeNumber, CancellationToken cancellationToken = default)
         {
             var user = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
-            if(user!=null)
+            if (user != null)
+            {
                 _context.Employees.Remove(user);
-            await _context.SaveChangesAsync(cancellationToken);
+            }
+            var saving = await _context.SaveChangesAsync(cancellationToken);
+            if (saving > 0) return true;
+            else return false;
         }
 
         public async Task<IEnumerable<EmployeeDto>> GetAll(CancellationToken cancellationToken = default)
@@ -57,7 +68,7 @@ namespace ShiftLogger.Backend.Services
             return dto;
         }
 
-        public async Task Update(int employeeNumber, EmployeeDto dto, CancellationToken cancellationToken = default)
+        public async Task<bool> Update(int employeeNumber, EmployeeDto dto, CancellationToken cancellationToken = default)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(e=>e.EmployeeNumber== employeeNumber, cancellationToken);
             if (employee != null)
@@ -65,7 +76,11 @@ namespace ShiftLogger.Backend.Services
                 _mapper.Map(dto, employee);
                 _context.Employees.Update(employee);
             }
-            await _context.SaveChangesAsync(cancellationToken);
+            else return false;
+
+            var saving = await _context.SaveChangesAsync(cancellationToken);
+            if (saving > 0) return true;
+            else return false;
         }
     }
 }

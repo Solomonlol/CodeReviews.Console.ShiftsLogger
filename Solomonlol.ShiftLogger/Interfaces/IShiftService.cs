@@ -11,7 +11,7 @@ namespace ShiftLogger.Backend.Interfaces
         //Task Delete(int id, CancellationToken cancellationToken = default);
         //Task Update(Shift item, CancellationToken cancellationToken = default);
         //Task Create(Shift item, CancellationToken cancellationToken = default);
-        Task Start(int employeeNumber, ShiftDto dto, CancellationToken cancellationToken = default);
-        Task End(int employeeNumber, ShiftDto dto, CancellationToken cancellationToken = default);
+        Task<bool> Start(int employeeNumber, ShiftDto dto, CancellationToken cancellationToken = default);
+        Task<bool> End(int employeeNumber, ShiftDto dto, CancellationToken cancellationToken = default);
     }
 }
