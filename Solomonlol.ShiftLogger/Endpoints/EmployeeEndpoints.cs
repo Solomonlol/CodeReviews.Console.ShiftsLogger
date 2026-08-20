@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using ShiftLogger.Backend.Entities;
-using ShiftLogger.Backend.Entities.Dto;
+﻿using ShiftLogger.Backend.Entities.Dto;
 using ShiftLogger.Backend.Interfaces;
 
 

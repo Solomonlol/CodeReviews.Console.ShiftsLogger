@@ -8,6 +8,7 @@ namespace ShiftLogger.Backend.Interfaces
         //Task<Shift> GetById(int id, CancellationToken cancellationToken = default);
         Task<IEnumerable<Shift>> GetAll(CancellationToken cancellationToken = default);
         Task<IEnumerable<Shift>> GetAllByEmployeeNumber(int empoyeeNumber, CancellationToken cancellationToken = default);
+        Task<ShiftDto?> GetCurrent(int employeeNumber, CancellationToken cancellationToken = default);
         //Task Delete(int id, CancellationToken cancellationToken = default);
         //Task Update(Shift item, CancellationToken cancellationToken = default);
         //Task Create(Shift item, CancellationToken cancellationToken = default);

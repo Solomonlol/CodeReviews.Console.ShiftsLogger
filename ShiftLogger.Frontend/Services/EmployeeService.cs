@@ -96,8 +96,7 @@ namespace ShiftLogger.Frontend.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadFromJsonAsync<EmployeeDto>(cancellationToken: ct);
-                    return result;
+                    return await response.Content.ReadFromJsonAsync<EmployeeDto>(cancellationToken: ct);
                 }
                 else return null;
             }
@@ -125,8 +124,7 @@ namespace ShiftLogger.Frontend.Services
                 var response = await _httpClient.GetAsync($"api/employees", ct);
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadFromJsonAsync<List<EmployeeDto>>(cancellationToken: ct);
-                    return result;
+                    return await response.Content.ReadFromJsonAsync<List<EmployeeDto>>(cancellationToken: ct);
                 }
                 else return Enumerable.Empty<EmployeeDto>();
             }

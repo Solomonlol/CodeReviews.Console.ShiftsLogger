@@ -4,7 +4,6 @@ using ShiftLogger.Backend.Entities;
 using ShiftLogger.Backend.Entities.Dto;
 using ShiftLogger.Backend.Interfaces;
 using Solomonlol.ShiftLogger;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace ShiftLogger.Backend.Services
@@ -58,16 +57,15 @@ namespace ShiftLogger.Backend.Services
             else return false;
         }
 
-        //public async Task Delete(int id, CancellationToken cancellationToken = default)
-        //{
-        //    var shift = await _context.Shifts.FindAsync(id, cancellationToken);
-        //    if(shift!=null)
-        //        _context.Shifts.Remove(shift);
-        //    await _context.SaveChangesAsync(cancellationToken);
-        //}
         public async Task<IEnumerable<Shift>> GetAll(CancellationToken cancellationToken = default)
         {
             return await _context.Shifts.ToListAsync(cancellationToken);
+        }
+        public async Task<ShiftDto?> GetCurrent(int employeeNumber, CancellationToken cancellationToken = default)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
+            var shift = await _context.Shifts.Where(s => s.EmployeeId == employee.Id && s.IsEnded == false).FirstAsync(cancellationToken);
+            return employee != null ? _mapper.Map<ShiftDto>(shift) : null;
         }
 
         public async Task<IEnumerable<Shift>> GetAllByEmployeeNumber(int employeeNumber, CancellationToken cancellationToken = default)
@@ -77,11 +75,6 @@ namespace ShiftLogger.Backend.Services
             return employee!=null ? await _context.Shifts.Where(s => s.EmployeeId == employee.Id).ToListAsync(cancellationToken) : Enumerable.Empty<Shift>();
             
         }
-
-        //public async Task<Shift> GetById(int id, CancellationToken cancellationToken = default)
-        //{
-        //    return await _context.Shifts.FindAsync(id, cancellationToken);
-        //}
 
         private async Task<bool> Create(Shift shift, CancellationToken cancellationToken = default)
         {
@@ -95,5 +88,6 @@ namespace ShiftLogger.Backend.Services
                 _context.Shifts.Update(shift);
             return await _context.SaveChangesAsync(cancellationToken)>0 ? true : false;
         }
+
     }
 }

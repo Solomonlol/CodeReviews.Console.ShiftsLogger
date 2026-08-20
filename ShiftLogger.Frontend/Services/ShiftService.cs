@@ -3,6 +3,7 @@ using ShiftLogger.Frontend.Interfaces;
 using Spectre.Console;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -82,24 +83,96 @@ namespace ShiftLogger.Frontend.Services
             }
         }
 
-        public Task<IEnumerable<ShiftDto>> GetAll(CancellationToken ct = default)
+        public async Task<IEnumerable<ShiftDto>?> GetAll(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await _httpClient.GetAsync("api/shifts", ct);
+                return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<IEnumerable<ShiftDto>>(cancellationToken: ct) : Enumerable.Empty<ShiftDto>();
+            }
+            catch (HttpRequestException)
+            {
+                AnsiConsole.MarkupLine("[red]No server responce.[/]");
+                return Enumerable.Empty<ShiftDto>();
+            }
+            catch (TaskCanceledException)
+            {
+                AnsiConsole.MarkupLine("[red]The request to the server timed out.[/]");
+                return Enumerable.Empty<ShiftDto>();
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
+                return Enumerable.Empty<ShiftDto>();
+            }
         }
 
-        public Task<IEnumerable<ShiftDto>> GetAllCurrent(CancellationToken ct = default)
+        public async Task<IEnumerable<ShiftDto>?> GetAllCurrent(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var result = (await GetAll(ct)).ToList();
+            return result.Any() ? result.Where(r=>r.IsEnded == false) : Enumerable.Empty<ShiftDto>();
         }
 
-        public Task<IEnumerable<ShiftDto>> GetByEmployeeNumber(CancellationToken ct = default)
+        public async Task<IEnumerable<ShiftDto>?> GetByEmployeeNumber(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var employeeNumber = await AnsiConsole.AskAsync<int>("[yellow]Enter personal employee number:[/]", ct);
+                var response = await _httpClient.GetAsync($"api/employees/{employeeNumber}", ct);
+                if (response.IsSuccessStatusCode)
+                {
+                    response = await _httpClient.GetAsync($"api/shifts/{employeeNumber}", ct);
+
+                    return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<IEnumerable<ShiftDto>>(cancellationToken: ct) : Enumerable.Empty<ShiftDto>();
+                }
+                else return Enumerable.Empty<ShiftDto>();
+            }
+            catch (HttpRequestException)
+            {
+                AnsiConsole.MarkupLine("[red]No server responce.[/]");
+                return Enumerable.Empty<ShiftDto>();
+            }
+            catch (TaskCanceledException)
+            {
+                AnsiConsole.MarkupLine("[red]The request to the server timed out.[/]");
+                return Enumerable.Empty<ShiftDto>();
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
+                return Enumerable.Empty<ShiftDto>();
+            }
         }
 
-        public Task GetCurrent(CancellationToken ct = default)
+        public async Task<ShiftDto?> GetCurrent(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var employeeNumber = await AnsiConsole.AskAsync<int>("[yellow]Enter personal employee number:[/]", ct);
+                var response = await _httpClient.GetAsync($"api/employees/{employeeNumber}", ct);
+                if (response.IsSuccessStatusCode)
+                {
+                    response = await _httpClient.GetAsync($"api/shifts/current/{employeeNumber}", ct);
+
+                    return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<ShiftDto>(cancellationToken: ct) : null;
+                }
+                else return null;
+            }
+            catch (HttpRequestException)
+            {
+                AnsiConsole.MarkupLine("[red]No server responce.[/]");
+                return null;
+            }
+            catch (TaskCanceledException)
+            {
+                AnsiConsole.MarkupLine("[red]The request to the server timed out.[/]");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
+                return null;
+            }
         }
 
     }
