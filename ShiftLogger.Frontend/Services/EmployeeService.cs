@@ -149,44 +149,48 @@ namespace ShiftLogger.Frontend.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var employeeDto = await response.Content.ReadFromJsonAsync<EmployeeDto>();
+                    if(employeeDto!=null)
+                    { 
                     var properties = employeeDto.GetType().GetProperties().Select(p => p.Name).ToArray();
                     var choises = AnsiConsole.Prompt(new MultiSelectionPrompt<string>()
                         .Title("[yellow]Choose what info to update:[/]")
                         .AddChoices(properties)
                         );
-                    if (await AnsiConsole.ConfirmAsync("Are you sure?"))
-                    {
-                        do
+                        if (await AnsiConsole.ConfirmAsync("Are you sure?"))
                         {
-                            foreach (var choise in choises)
+                            do
                             {
-                                switch (choise)
+                                foreach (var choise in choises)
                                 {
-                                    case "FirstName":
-                                        employeeDto.FirstName = await AnsiConsole.AskAsync<string>("[yellow]New first name:[/]");
-                                        break;
-                                    case "LastName":
-                                        employeeDto.LastName = await AnsiConsole.AskAsync<string>("[yellow]New last name:[/]");
-                                        break;
-                                    case "EmployeeNumber":
-                                        employeeDto.EmployeeNumber = await AnsiConsole.AskAsync<int>("[yellow]New employee number:[/]");
-                                        break;
+                                    switch (choise)
+                                    {
+                                        case "FirstName":
+                                            employeeDto.FirstName = await AnsiConsole.AskAsync<string>("[yellow]New first name:[/]");
+                                            break;
+                                        case "LastName":
+                                            employeeDto.LastName = await AnsiConsole.AskAsync<string>("[yellow]New last name:[/]");
+                                            break;
+                                        case "EmployeeNumber":
+                                            employeeDto.EmployeeNumber = await AnsiConsole.AskAsync<int>("[yellow]New employee number:[/]");
+                                            break;
+                                    }
                                 }
+                            } while (!await ValidateDto.Validate(employeeDto));
+
+
+
+                            var jsonDto = JsonSerializer.Serialize(employeeDto);
+                            var content = new StringContent(jsonDto, Encoding.UTF8, "application/json");
+                            var responce = await _httpClient.PutAsync($"api/employees/{employeeNumber}", content);
+
+                            if (responce.IsSuccessStatusCode)
+                                AnsiConsole.MarkupLine("[green]Updated successfully.[/]");
+                            else
+                            {
+                                AnsiConsole.MarkupLine($"[red]API Error: {(int)responce.StatusCode} - {responce.ReasonPhrase}[/]");
                             }
-                        } while (!await ValidateDto.Validate(employeeDto));
-
-
-
-                        var jsonDto = JsonSerializer.Serialize(employeeDto);
-                        var content = new StringContent(jsonDto, Encoding.UTF8, "application/json");
-                        var responce = await _httpClient.PutAsync($"api/employees/{employeeNumber}", content);
-
-                        if (responce.IsSuccessStatusCode)
-                            AnsiConsole.MarkupLine("[green]Updated successfully.[/]");
-                        else
-                        {
-                            AnsiConsole.MarkupLine($"[red]API Error: {(int)responce.StatusCode} - {responce.ReasonPhrase}[/]");
                         }
+                        else AnsiConsole.MarkupLine("[red]Not found employee.[/]");
                     }
                 }
             }
