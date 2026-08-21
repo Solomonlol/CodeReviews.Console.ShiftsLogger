@@ -34,7 +34,7 @@ namespace ShiftLogger.Frontend.Menus
             var responce = (await _employeeService.GetAll(ct))?.ToList();
             if (responce?.Any()==true)
                 await _viewService.View(responce, "Employees", ct);
-            else AnsiConsole.MarkupLine("[red]Not found any employees[/]");
+            else AnsiConsole.MarkupLine("[red]Not found any employees.[/]");
         }
         
         public async Task Get(CancellationToken ct = default)
@@ -46,6 +46,7 @@ namespace ShiftLogger.Frontend.Menus
                 list.Add(response);
                 await _viewService.View(list, "Empoyee info", ct);
             }
+            else AnsiConsole.MarkupLine("[red]The employee with the entered number does not exist.[/]");
         }
 
         public async Task Update(CancellationToken ct = default)

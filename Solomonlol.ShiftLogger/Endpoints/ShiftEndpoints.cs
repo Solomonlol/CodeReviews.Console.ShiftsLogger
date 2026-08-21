@@ -25,7 +25,7 @@ namespace ShiftLogger.Backend.Endpoints
             app.MapGet("/api/shifts/current/{employeeNumber}", async (int employeeNumber, IShiftService db, CancellationToken ct) =>
             {
                 var result = await db.GetCurrent(employeeNumber, ct);
-                return result is null ? Results.NotFound() : Results.Ok(result);
+                return result == null ? Results.NotFound() : Results.Ok(result);
             });
 
             //start shift by employee

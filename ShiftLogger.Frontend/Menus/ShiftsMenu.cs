@@ -36,8 +36,9 @@ namespace ShiftLogger.Frontend.Menus
         public async Task GetAll(CancellationToken ct = default)
         {
             var list = (await _shiftService.GetAll(ct))?.ToList();
-            if(list?.Any()==true)
+            if (list?.Any() == true)
                 await _viewService.View(list.ToList(), "All shifts", ct);
+            else AnsiConsole.MarkupLine("[red]Not found any shifts.[/]");
         }
 
         public async Task GetAllCurrent(CancellationToken ct = default)
@@ -45,6 +46,7 @@ namespace ShiftLogger.Frontend.Menus
             var list = (await _shiftService.GetAllCurrent(ct))?.ToList();
             if(list?.Any()==true)
                 await _viewService.View(list.ToList(), "All current shifts", ct);
+            else AnsiConsole.MarkupLine("[red]Not found any current shifts.[/]");
         }
 
         public async Task GetCurrent(CancellationToken ct = default)
@@ -55,6 +57,7 @@ namespace ShiftLogger.Frontend.Menus
                 var list = new List<ShiftDto>() { current };
                 await _viewService.View(list, "Current shift by selected employee", ct);
             }
+            else AnsiConsole.MarkupLine("[red]This employee is not currently on shift.[/]");
         }
     }
 }

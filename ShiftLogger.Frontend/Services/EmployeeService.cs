@@ -1,8 +1,7 @@
 ﻿using ShiftLogger.Frontend.Entities.Dto;
 using ShiftLogger.Frontend.Interfaces;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
+using ShiftLogger.Frontend.MyValidations;
 using System.Net.Http.Json;
 using System.Reflection;
 using System.Text;
@@ -16,30 +15,28 @@ namespace ShiftLogger.Frontend.Services
         public EmployeeService(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5013/");
         }
         public async Task Create(CancellationToken ct = default)
         {
             try
             {
-                var employeeDto = new EmployeeDto();
-                employeeDto.FirstName = await AnsiConsole.AskAsync<string>("[yellow]Enter first name:[/]");
-                employeeDto.LastName = await AnsiConsole.AskAsync<string>("[yellow]Enter last name:[/]");
-                employeeDto.EmployeeNumber = await AnsiConsole.AskAsync<int>("[yellow]Enter personal employee number:[/]");
-
-                var jsonDto = JsonSerializer.Serialize(employeeDto);
-                var content = new StringContent(jsonDto, Encoding.UTF8, "application/json");
-                var responce = await _httpClient.PostAsync($"api/employees", content);
-
-                if (responce.IsSuccessStatusCode)
+                var employeeDto = await ValidateDto.CreateEmployee();
+                if (employeeDto != null)
                 {
-                    AnsiConsole.MarkupLine($"[green]Employee was successfully created[/]");
-                }
-                else
-                {
-                    //var error = await responce.Content.ReadAsStringAsync();
-                    AnsiConsole.MarkupLine($"[red]API Error: {(int)responce.StatusCode} - {responce.ReasonPhrase}[/]");
-                    
+                    var jsonDto = JsonSerializer.Serialize(employeeDto);
+                    var content = new StringContent(jsonDto, Encoding.UTF8, "application/json");
+                    var responce = await _httpClient.PostAsync($"api/employees", content);
+
+                    if (responce.IsSuccessStatusCode)
+                    {
+                        AnsiConsole.MarkupLine($"[green]Employee was successfully created[/]");
+                    }
+                    else
+                    {
+                        //var error = await responce.Content.ReadAsStringAsync();
+                        AnsiConsole.MarkupLine($"[red]API Error: {(int)responce.StatusCode} - {responce.ReasonPhrase}[/]");
+
+                    }
                 }
             }
             catch(HttpRequestException)

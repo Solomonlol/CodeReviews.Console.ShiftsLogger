@@ -36,5 +36,8 @@ Accept: application/json
 POST {{Solomonlol.ShiftLogger_HostAddress}}/api/shifts/224
 Content-Type: application/json
 {
-  "20-08-2026"
+    "startTime": "2026-08-20T14:42:04.4389831",
+    "endTime": null,
+    "isEnded": false,
+    "employeeId": 5,
 }

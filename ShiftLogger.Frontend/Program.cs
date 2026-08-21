@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ShiftLogger.Frontend.Interfaces;
 using ShiftLogger.Frontend.Menus;
@@ -13,7 +14,12 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddTransient<MainMenu>();
         services.AddTransient<ShiftsMenu>();
         services.AddTransient<EmployeeManagementMenu>();
-        services.AddHttpClient();
+        services.AddHttpClient("ApiClient",(sp, client)=>
+        {
+            var config = sp.GetRequiredService<IConfiguration>();
+            var baseUrl = config["ApiSettings:BaseUrl"] ?? "http://localhost:5013/";
+            client.BaseAddress = new Uri(baseUrl);
+        });
     })
     .Build();
 
