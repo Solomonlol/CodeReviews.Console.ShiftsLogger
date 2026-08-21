@@ -14,7 +14,7 @@ namespace ShiftLogger.Frontend.Entities.Dto
         [RegularExpression(@"^[a-zA-Zа-яА-Я]+$", ErrorMessage = "Last name must contain only letters of the English and Russian alphabet.")]
         public string LastName { get; set; } = string.Empty;
 
-
+        [Required(ErrorMessage = "Employee number is required. Please fill in this field!")]
         [Range(1, 999999, ErrorMessage = "User identification number should be on 1-999999 range")]
         public int EmployeeNumber { get; set; }
         public DateTime? StartTime { get; set; } = null;
