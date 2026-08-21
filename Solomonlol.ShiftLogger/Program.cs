@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftLogger.Backend.Endpoints;
-using ShiftLogger.Backend.Entities;
 using ShiftLogger.Backend.Interfaces;
 using ShiftLogger.Backend.Mapping;
 using ShiftLogger.Backend.Services;

@@ -1,9 +1,4 @@
-﻿using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShiftLogger.Frontend.Interfaces
+﻿namespace ShiftLogger.Frontend.Interfaces
 {
     internal interface IViewService
     {

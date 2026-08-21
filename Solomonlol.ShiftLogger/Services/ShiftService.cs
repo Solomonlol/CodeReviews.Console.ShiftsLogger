@@ -5,7 +5,6 @@ using ShiftLogger.Backend.Entities.Dto;
 using ShiftLogger.Backend.Interfaces;
 using Solomonlol.ShiftLogger;
 
-
 namespace ShiftLogger.Backend.Services
 {
     public class ShiftService : IShiftService

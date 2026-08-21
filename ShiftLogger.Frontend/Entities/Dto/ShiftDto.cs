@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ShiftLogger.Frontend.Entities.Dto
+﻿namespace ShiftLogger.Frontend.Entities.Dto
 {
     public class ShiftDto
     {

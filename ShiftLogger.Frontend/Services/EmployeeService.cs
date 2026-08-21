@@ -3,7 +3,6 @@ using ShiftLogger.Frontend.Interfaces;
 using Spectre.Console;
 using ShiftLogger.Frontend.MyValidations;
 using System.Net.Http.Json;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 

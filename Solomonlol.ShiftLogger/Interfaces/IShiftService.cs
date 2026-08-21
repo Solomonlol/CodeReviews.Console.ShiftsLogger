@@ -1,5 +1,4 @@
-﻿using ShiftLogger.Backend.Entities;
-using ShiftLogger.Backend.Entities.Dto;
+﻿using ShiftLogger.Backend.Entities.Dto;
 
 namespace ShiftLogger.Backend.Interfaces
 {

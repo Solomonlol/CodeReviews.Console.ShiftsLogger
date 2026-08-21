@@ -1,7 +1,4 @@
 ﻿using ShiftLogger.Frontend.Entities.Dto;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ShiftLogger.Frontend.Interfaces
 {

@@ -1,7 +1,6 @@
 ﻿using ShiftLogger.Frontend.Entities.Dto;
 using ShiftLogger.Frontend.Interfaces;
 using Spectre.Console;
-using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;

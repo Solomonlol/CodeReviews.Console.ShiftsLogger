@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShiftLogger.Backend.Entities;
-using System.ComponentModel.DataAnnotations;
 
 namespace Solomonlol.ShiftLogger
 {

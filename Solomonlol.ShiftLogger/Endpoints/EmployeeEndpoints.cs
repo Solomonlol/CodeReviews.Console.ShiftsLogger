@@ -1,7 +1,6 @@
 ﻿using ShiftLogger.Backend.Entities.Dto;
 using ShiftLogger.Backend.Interfaces;
 
-
 namespace ShiftLogger.Backend.Endpoints
 {
     public static class EmployeeEndpoints

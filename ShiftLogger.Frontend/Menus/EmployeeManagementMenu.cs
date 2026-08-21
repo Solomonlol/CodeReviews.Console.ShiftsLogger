@@ -1,9 +1,6 @@
 ﻿using ShiftLogger.Frontend.Entities.Dto;
 using ShiftLogger.Frontend.Interfaces;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ShiftLogger.Frontend.Menus
 {
