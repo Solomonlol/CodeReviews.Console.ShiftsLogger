@@ -8,8 +8,6 @@ namespace ShiftLogger.Frontend.MyValidations
     {
         public static async Task<EmployeeDto?> CreateEmployee()
         {
-            while(true)
-            {
                 Console.Clear();
                 
                 var firstName = await AnsiConsole.AskAsync<string>("[yellow]Enter first name:[/]");
@@ -33,9 +31,6 @@ namespace ShiftLogger.Frontend.MyValidations
                     AnsiConsole.MarkupLine("[green]Employee was validated succesfully.[/]");
                     return employee;
                 }
-                
-            } 
-            
         }
     }
 }
