@@ -14,7 +14,7 @@ namespace ShiftLogger.Frontend.Services
         private readonly HttpClient _httpClient;
         public EmployeeService(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
+            _httpClient = httpClientFactory.CreateClient("ApiClient");
         }
         public async Task Create(CancellationToken ct = default)
         {

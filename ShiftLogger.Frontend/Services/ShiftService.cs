@@ -13,7 +13,7 @@ namespace ShiftLogger.Frontend.Services
         private readonly HttpClient _httpClient;
         public ShiftService(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
+            _httpClient = httpClientFactory.CreateClient("ApiClient");
         }
         public async Task Start(CancellationToken ct = default)
         {
