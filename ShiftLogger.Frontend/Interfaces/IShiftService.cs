@@ -4,7 +4,7 @@ namespace ShiftLogger.Frontend.Interfaces
 {
     internal interface IShiftService
     {
-        Task<IEnumerable<ShiftDto>?> GetByEmployeeNumber(CancellationToken cancellationToken = default);
+        Task<IEnumerable<FullDto>?> GetAllByEmployeeNumber(CancellationToken cancellationToken = default);
         Task<IEnumerable<FullDto>?> GetAll(CancellationToken cancellationToken = default);
         Task<IEnumerable<FullDto>?> GetAllCurrent(CancellationToken cancellationToken = default);
         Task<ShiftDto?> GetCurrent(CancellationToken cancellationToken = default);

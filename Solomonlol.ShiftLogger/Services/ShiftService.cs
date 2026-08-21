@@ -58,24 +58,28 @@ namespace ShiftLogger.Backend.Services
 
         public async Task<IEnumerable<FullDto>> GetAll(CancellationToken cancellationToken = default)
         {
-            var shiftList = await _context.Shifts.ToListAsync(cancellationToken);
+            var shiftList = await _context.Shifts.Include(e=>e.Employee).ToListAsync(cancellationToken);
             var fullList = new List<FullDto>();
             foreach (var shift in shiftList)
             {
-                var employee = await _context.Employees.FindAsync(shift.EmployeeId);
+                var employee = shift.Employee;
                 fullList.Add(new FullDto(employee, shift));
             }
             return fullList;
         }
 
-        public async Task<ShiftDto?> GetCurrent(int employeeNumber, CancellationToken cancellationToken = default)
+        public async Task<FullDto?> GetCurrent(int employeeNumber, CancellationToken cancellationToken = default)
         {
             var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber, cancellationToken);
-            
-            return employee != null 
-                ? _mapper.Map<ShiftDto>(await _context.Shifts.Where(s => s.EmployeeId == employee.Id && s.IsEnded == false)
-                                        .FirstOrDefaultAsync(cancellationToken)) 
-                : null;
+            if(employee!=null)
+            {
+                var currentShift = await _context.Shifts.Where(s => s.EmployeeId == employee.Id && s.IsEnded == false)
+                                        .FirstOrDefaultAsync(cancellationToken);
+                if(currentShift!=null)
+                    return new FullDto(employee, currentShift);
+                else return null;
+            }    
+            return null;
         }
 
         public async Task<IEnumerable<FullDto>> GetAllByEmployeeNumber(int employeeNumber, CancellationToken cancellationToken = default)

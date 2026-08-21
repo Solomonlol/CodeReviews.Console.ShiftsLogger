@@ -15,6 +15,7 @@ namespace ShiftLogger.Frontend.Menus
             AddItem("View all", () => GetAll());
             AddItem("View all current", () => GetAllCurrent());
             AddItem("View current by employee", () => GetCurrent());
+            AddItem("View all by employee", () => GetAllByEmployee());
             AddItem("Start shift", () => Start());
             AddItem("End shift", () => End());
             AddExitItem("Back");
@@ -33,7 +34,7 @@ namespace ShiftLogger.Frontend.Menus
         {
             var list = (await _shiftService.GetAll(ct))?.ToList();
             if (list?.Any() == true)
-                await _viewService.View(list.ToList(), "All shifts", ct);
+                await _viewService.View(list, "All shifts", ct);
             else AnsiConsole.MarkupLine("[red]Not found any shifts.[/]");
         }
 
@@ -41,7 +42,7 @@ namespace ShiftLogger.Frontend.Menus
         {
             var list = (await _shiftService.GetAllCurrent(ct))?.ToList();
             if(list?.Any()==true)
-                await _viewService.View(list.ToList(), "All current shifts", ct);
+                await _viewService.View(list, "All current shifts", ct);
             else AnsiConsole.MarkupLine("[red]Not found any current shifts.[/]");
         }
 
@@ -54,6 +55,14 @@ namespace ShiftLogger.Frontend.Menus
                 await _viewService.View(list, "Current shift by selected employee", ct);
             }
             else AnsiConsole.MarkupLine("[red]This employee is not currently on shift.[/]");
+        }
+
+        public async Task GetAllByEmployee(CancellationToken ct = default)
+        {
+            var list = (await _shiftService.GetAllByEmployeeNumber(ct))?.ToList();
+            if (list?.Any() == true)
+                await _viewService.View(list, "All current shifts", ct);
+            else AnsiConsole.MarkupLine("[red]Not found any current shifts.[/]");
         }
     }
 }

@@ -110,7 +110,7 @@ namespace ShiftLogger.Frontend.Services
             return result.Any() ? result.Where(r=>r.IsEnded == false) : Enumerable.Empty<FullDto>();
         }
 
-        public async Task<IEnumerable<ShiftDto>?> GetByEmployeeNumber(CancellationToken ct = default)
+        public async Task<IEnumerable<FullDto>?> GetAllByEmployeeNumber(CancellationToken ct = default)
         {
             try
             {
@@ -120,24 +120,24 @@ namespace ShiftLogger.Frontend.Services
                 {
                     response = await _httpClient.GetAsync($"api/shifts/{employeeNumber}", ct);
 
-                    return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<IEnumerable<ShiftDto>>(cancellationToken: ct) : Enumerable.Empty<ShiftDto>();
+                    return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<IEnumerable<FullDto>>(cancellationToken: ct) : Enumerable.Empty<FullDto>();
                 }
-                else return Enumerable.Empty<ShiftDto>();
+                else return Enumerable.Empty<FullDto>();
             }
             catch (HttpRequestException)
             {
                 AnsiConsole.MarkupLine("[red]No server responce.[/]");
-                return Enumerable.Empty<ShiftDto>();
+                return Enumerable.Empty<FullDto>();
             }
             catch (TaskCanceledException)
             {
                 AnsiConsole.MarkupLine("[red]The request to the server timed out.[/]");
-                return Enumerable.Empty<ShiftDto>();
+                return Enumerable.Empty<FullDto>();
             }
             catch (Exception ex)
             {
                 AnsiConsole.MarkupLine($"[red]{ex.Message}[/]");
-                return Enumerable.Empty<ShiftDto>();
+                return Enumerable.Empty<FullDto>();
             }
         }
 

@@ -32,7 +32,6 @@ namespace ShiftLogger.Frontend.Services
                     }
                     else
                     {
-                        //var error = await responce.Content.ReadAsStringAsync();
                         AnsiConsole.MarkupLine($"[red]API Error: {(int)responce.StatusCode} - {responce.ReasonPhrase}[/]");
 
                     }
@@ -157,21 +156,26 @@ namespace ShiftLogger.Frontend.Services
                         );
                     if (await AnsiConsole.ConfirmAsync("Are you sure?"))
                     {
-                        foreach (var choise in choises)
+                        do
                         {
-                            switch (choise)
+                            foreach (var choise in choises)
                             {
-                                case "FirstName":
-                                    employeeDto.FirstName = await AnsiConsole.AskAsync<string>("[yellow]New first name:[/]");
-                                    break;
-                                case "LastName":
-                                    employeeDto.LastName = await AnsiConsole.AskAsync<string>("[yellow]New last name:[/]");
-                                    break;
-                                case "EmployeeNumber":
-                                    employeeDto.EmployeeNumber = await AnsiConsole.AskAsync<int>("[yellow]New employee number:[/]");
-                                    break;
+                                switch (choise)
+                                {
+                                    case "FirstName":
+                                        employeeDto.FirstName = await AnsiConsole.AskAsync<string>("[yellow]New first name:[/]");
+                                        break;
+                                    case "LastName":
+                                        employeeDto.LastName = await AnsiConsole.AskAsync<string>("[yellow]New last name:[/]");
+                                        break;
+                                    case "EmployeeNumber":
+                                        employeeDto.EmployeeNumber = await AnsiConsole.AskAsync<int>("[yellow]New employee number:[/]");
+                                        break;
+                                }
                             }
-                        }
+                        } while (!await ValidateDto.Validate(employeeDto));
+
+
 
                         var jsonDto = JsonSerializer.Serialize(employeeDto);
                         var content = new StringContent(jsonDto, Encoding.UTF8, "application/json");
